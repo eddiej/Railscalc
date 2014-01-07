@@ -1,0 +1,65 @@
+%h1 Calculator Test
+
+%h2 Environment
+%ul 
+  %li The latest stable version of Ruby and Ruby on Rails
+  %li Any database but MongoDB preferred
+
+%h2 Task description
+%ol
+  %li 
+    A webpage should be created which will implement a simple calculator consisting of:
+    %ol
+      %li two input fields, called a and b
+      %li four buttons labeled sum, difference, multiplication and division
+      %li one textarea element with edit mode disabled (read-only)
+
+  %li Calculator must operate only on non-negative integer numbers lower than 100. When the form is invalid, the four buttons mentioned above should be disabled.
+
+  %li When user fills the form and clicks one of the buttons, the form content should be sent to the server with AJAX POST call; and the server response put directly into textarea element.
+
+  %li 
+    Server-side code should work in following way:
+    %ol
+      %li in case of invalid data provided “error” text should be returned
+      %li 
+        all calculations previously made should be stored in the database; if an operation with given parameters hasn't been made yet, it should be saved; otherwise calculation result should be fetched from DB server response should equal to 4 lines of text in following format:
+        %br/
+        %em Operation: A
+        %br/
+        %em Result: B
+        %br/
+        %em ID: C
+        %br/
+        %em Count: D,
+        where:
+        %ol
+          %li A will be equal to text interpretation of the operation (e.g. in     case of sum of numbers 24 and 23 A should be equal to “24 + 23”
+          %li B will be equal to calculation result
+          %li C will be an DB document/record ID where given operation data is stored
+          %li D will equal to number of previous calls for given operation
+      %li The form should be inactive during the data calculation on the server side, i.e. the user is not allowed to request another calculation if the previous one is not finished
+
+
+%h2 Implementation
+=form_for @calculation, :remote => true do |f|
+  -[:a, :b].each do |input|
+    .field
+      = f.label input, input 
+      = f.text_field input
+          
+  -['sum', 'difference', 'multiplication', 'division'].each do |action|
+    = f.submit action, :disabled => true
+    
+  .field
+    =label_tag :answer
+    =text_area_tag :answer, nil, name: nil, :disabled => true
+    
+%h2 Notes
+%ol
+  %li Ensure MongoDB is running on your local machine before starting the rails server. Database indexes can be created with <code>bundle exec rake db:mongoid:create_indexes</code>.
+  %li A runthrough of the calculator can be viewed in the browser by running the tests: <code>bundle exec rspec</code>. Sleep functions have been added to make the tests viewable.
+  %li The value for Count will be 0 the first time a calculation is performed as per the spec: <em>'D will equal to number of <strong>previous</strong> calls for given operation'</em>
+  %li No fallback is provided if javascript is disabled - this is something that I'd normally consider. If javascript is disabled, the form submit buttons are also disabled so checking for invalid data server-side is somewhat redundant (unless there was a requirement to allow for the controller actions to be accessed through curl or by enabling the submit buttons through a web console).
+  %li The spec calls for the server response to be put directly into textarea element, so the controller renders text rather than a json object or other data type.
+  

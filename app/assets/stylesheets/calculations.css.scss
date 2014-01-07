@@ -1,0 +1,11 @@
+// Place all the styles related to the calculations controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+body {padding:0 20px 20px}
+label[for^='calculation_'] {float:left; margin-right:8px;}
+input[type='text'] {float:left;width:30px;margin-bottom:20px;margin-right:8px;}
+label[for='answer']{display:block;clear:both;}
+textarea {width:384px;height:200px;padding:8px;}
+
+ol li li {list-style-type:lower-alpha}
+ol li li li {list-style-type:lower-roman}
